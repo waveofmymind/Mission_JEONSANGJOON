@@ -6,9 +6,13 @@ import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.member.entity.Member;
+import com.ll.gramgram.boundedContext.member.service.MemberService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,10 +22,11 @@ import java.util.List;
 public class LikeablePersonService {
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
+    private final MemberService memberService;
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
-        if ( member.hasConnectedInstaMember() == false ) {
+        if (!member.hasConnectedInstaMember()) {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
         }
 
@@ -48,4 +53,22 @@ public class LikeablePersonService {
     public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
     }
+
+    public LikeablePerson findlikeablePersonById(Long likeablePersonId) {
+        return likeablePersonRepository.findById(likeablePersonId)
+                .orElseThrow(EntityNotFoundException::new);
+    }
+
+    @Transactional
+    public void deleteLikeablePerson(Long likeablePersonId, String username) {
+        LikeablePerson likeablePerson = findlikeablePersonById(likeablePersonId);
+        //해당 좋아요를 한 사람이 principal의 이름과 같은지 확인하기
+        Member member = memberService.findByUsernameWithInstaMember(username);
+        if(!member.getInstaMember().getUsername().equals(likeablePerson.getFromInstaMemberUsername())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"작성자 본인이 아닙니다.");
+        }
+        likeablePersonRepository.deleteById(likeablePersonId);
+    }
+
+
 }
