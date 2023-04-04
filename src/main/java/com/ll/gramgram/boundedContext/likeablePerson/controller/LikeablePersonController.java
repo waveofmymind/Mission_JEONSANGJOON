@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
+import com.ll.gramgram.base.error.ErrorCode;
 import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
@@ -71,9 +72,16 @@ public class LikeablePersonController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/delete/{likeablePersonId}")
-    public String deleteLikeablePerson(@PathVariable Long likeablePersonId,
-                                       Principal principal) {
-        likeablePersonService.deleteLikeablePerson(likeablePersonId,principal.getName());
+    public String deleteLikeablePerson(@PathVariable Long likeablePersonId) {
+
+        InstaMember findInstaMember  = rq.getMember().getInstaMember();
+        LikeablePerson findlikeablePerson = likeablePersonService.findlikeablePersonById(likeablePersonId);
+
+        if(!findInstaMember.getUsername().equals(findlikeablePerson.getFromInstaMemberUsername())){
+            return rq.redirectWithMsg("/likeablePerson/list", RsData.failOf(ErrorCode.NOT_THE_WRITER));
+        }
+
+        likeablePersonService.deleteLikeablePerson(findlikeablePerson.getId());
         return "usr/likeablePerson/list";
     }
 }

@@ -59,16 +59,11 @@ public class LikeablePersonService {
                 .orElseThrow(EntityNotFoundException::new);
     }
 
+
     @Transactional
-    public void deleteLikeablePerson(Long likeablePersonId, String username) {
-        LikeablePerson likeablePerson = findlikeablePersonById(likeablePersonId);
-        //해당 좋아요를 한 사람이 principal의 이름과 같은지 확인하기
-        Member member = memberService.findByUsernameWithInstaMember(username);
-        if(!member.getInstaMember().getUsername().equals(likeablePerson.getFromInstaMemberUsername())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"작성자 본인이 아닙니다.");
-        }
+    public void deleteLikeablePerson(Long likeablePersonId) {
+
         likeablePersonRepository.deleteById(likeablePersonId);
+
     }
-
-
 }

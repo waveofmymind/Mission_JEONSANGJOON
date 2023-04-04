@@ -26,4 +26,14 @@ public class MemberQueryRepository {
                 .fetchFirst());
     }
 
+    public Optional<Member> findMemberByIdWithInstaMember(Long userId) {
+        return Optional.ofNullable(queryFactory
+                .selectFrom(member)
+                .join(member.instaMember, instaMember)
+                .fetchJoin()
+                .where(member.id.eq(userId))
+                .fetchFirst());
+    }
+
+
 }
