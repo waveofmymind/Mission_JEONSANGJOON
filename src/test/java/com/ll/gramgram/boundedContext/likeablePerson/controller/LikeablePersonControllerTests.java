@@ -155,7 +155,7 @@ public class LikeablePersonControllerTests {
     @WithUserDetails("user3")
     void t006() throws Exception {
         //given
-        Long likeableUserId = 1L; // 원하는 값을 설정하세요.
+        Long likeableUserId = 1L;
         ResultActions resultActions = mvc
                 .perform(get("/likeablePerson/delete/{likeableUserId}", likeableUserId))
                 .andDo(print());
