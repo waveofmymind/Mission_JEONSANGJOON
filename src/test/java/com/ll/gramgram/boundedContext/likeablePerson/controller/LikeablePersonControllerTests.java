@@ -149,4 +149,19 @@ public class LikeablePersonControllerTests {
                         """.stripIndent().trim())));
         ;
     }
+
+    @Test
+    @DisplayName("좋아요 삭제 테스트")
+    @WithUserDetails("user3")
+    void t006() throws Exception {
+        //given
+        Long likeableUserId = 1L;
+        ResultActions resultActions = mvc
+                .perform(get("/likeablePerson/delete/{likeableUserId}", likeableUserId))
+                .andDo(print());
+        //when & then
+        resultActions.andExpect(handler().handlerType(LikeablePersonController.class))
+                .andExpect(handler().methodName("deleteLikeablePerson"))
+                .andExpect(status().is2xxSuccessful());
+    }
 }
