@@ -1,6 +1,7 @@
 package com.ll.gramgram.boundedContext.likeablePerson.controller;
 
 import com.ll.gramgram.base.error.ErrorCode;
+import com.ll.gramgram.base.error.exception.UnAuthorizedException;
 import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
@@ -22,8 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.Principal;
 import java.util.List;
+
 
 @Controller
 @RequestMapping("/likeablePerson")
@@ -78,10 +79,11 @@ public class LikeablePersonController {
         LikeablePerson findlikeablePerson = likeablePersonService.findlikeablePersonById(likeablePersonId);
 
         if(!findInstaMember.getUsername().equals(findlikeablePerson.getFromInstaMemberUsername())){
-            return rq.redirectWithMsg("/likeablePerson/list", RsData.failOf(ErrorCode.NOT_THE_WRITER));
+            throw new UnAuthorizedException(ErrorCode.NOT_THE_WRITER);
         }
 
         likeablePersonService.deleteLikeablePerson(findlikeablePerson.getId());
+
         return "usr/likeablePerson/list";
     }
 }

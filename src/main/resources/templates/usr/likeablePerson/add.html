@@ -56,6 +56,12 @@
 
         <form th:action method="POST" class="p-10 max-w-sm flex flex-col gap-4"
               onsubmit="AddForm__submit(this); return false;">
+
+            <div>
+                <img th:src="@{'/profileImage/' + ${@rq.member.instaMember.imageName}}" onerror="this.src='/profileImage/default.jpeg'" alt="Profile Image"/>
+            </div>
+
+
             <div>
                 당신의 인스타ID : <span class="badge" th:text="${@rq.member.instaMember.username}"></span>
             </div>

@@ -4,21 +4,21 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${DB_URL}
+    url: jdbc:mysql://127.0.0.1:3306/gram__dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
     username: wave
-    password: ${DB_PASSWORD}
+    password: 0913
   security:
     oauth2:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT}
-            client-secret: ${GOOGLE_SECRET}
+            client-id: 880429183467-jtklkap41o046aj1lm8diq1r5cje3m5p.apps.googleusercontent.com
+            client-secret: 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
             scope:
               - profile
               - email
           kakao:
-            clientId: ${KAKAO_CLIENT}
+            clientId: da582f291b457ffff3b60a0e9d003299
             scope:
             client-name: Kakao
             authorization-grant-type: authorization_code
