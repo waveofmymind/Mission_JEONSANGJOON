@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.Principal;
 import java.util.List;
 
+
 @Controller
 @RequestMapping("/likeablePerson")
 @RequiredArgsConstructor
@@ -78,7 +79,7 @@ public class LikeablePersonController {
         LikeablePerson findlikeablePerson = likeablePersonService.findlikeablePersonById(likeablePersonId);
 
         if(!findInstaMember.getUsername().equals(findlikeablePerson.getFromInstaMemberUsername())){
-            return rq.redirectWithMsg("/likeablePerson/list", RsData.failOf(ErrorCode.NOT_THE_WRITER));
+            throw new UnAuthorizedException(ErrorCode.NOT_THE_WRITER);
         }
 
         likeablePersonService.deleteLikeablePerson(findlikeablePerson.getId());

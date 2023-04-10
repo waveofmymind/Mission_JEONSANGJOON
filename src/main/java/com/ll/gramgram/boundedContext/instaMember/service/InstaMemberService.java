@@ -26,7 +26,7 @@ public class InstaMemberService {
     // member : 현재 로그인한 회원
     // username : 입력한 본인 인스타 username
     // gender : 입력한 본인의 성별
-    public RsData<InstaMember> connect(Member member, String username, String gender) {
+    public RsData<InstaMember> connect(Member member, String username, String gender,String imageName) {
         Optional<InstaMember> opInstaMember = findByUsername(username); // 혹시 다른 회원이 이미 입력하신 인스타 ID와 연결되었는지
 
         // 등록이 되어있고, 성별이 U가 아니라
@@ -36,7 +36,7 @@ public class InstaMemberService {
         }
 
         //
-        RsData<InstaMember> instaMemberRsData = findByUsernameOrCreate(username, gender);
+        RsData<InstaMember> instaMemberRsData = findByUsernameOrCreate(username, gender,imageName);
 
         memberService.updateInstaMember(member, instaMemberRsData.getData());
 
@@ -44,11 +44,12 @@ public class InstaMemberService {
     }
 
     // InstaMember 생성
-    private RsData<InstaMember> create(String username, String gender) {
+    private RsData<InstaMember> create(String username, String gender,String imageName) {
         InstaMember instaMember = InstaMember
                 .builder()
                 .username(username)
                 .gender(gender)
+                .imageName(imageName)
                 .build();
 
         instaMemberRepository.save(instaMember);
@@ -60,20 +61,20 @@ public class InstaMemberService {
     public RsData<InstaMember> findByUsernameOrCreate(String username) {
         Optional<InstaMember> opInstaMember = findByUsername(username);
 
-        if (opInstaMember.isPresent()) return RsData.of("S-2", "인스타계정이 등록되었습니다.", opInstaMember.get());
+        return opInstaMember.map(instaMember -> RsData.of("S-2", "인스타계정이 등록되었습니다.", instaMember)).orElseGet(() -> create(username, "U", ""));
 
         // 아직 성별을 알 수 없으니, 언노운의 의미로 U 넣음
-        return create(username, "U");
     }
 
     @Transactional
-    public RsData<InstaMember> findByUsernameOrCreate(String username, String gender) {
+    public RsData<InstaMember> findByUsernameOrCreate(String username, String gender,String imageName) {
         Optional<InstaMember> opInstaMember = findByUsername(username);
 
         // 찾았다면
         if (opInstaMember.isPresent()) {
             InstaMember instaMember = opInstaMember.get();
             instaMember.setGender(gender); // 성별세팅
+            instaMember.setImageName(imageName);
             instaMemberRepository.save(instaMember); // 저장
 
             // 기존 인스타회원이랑 연결
@@ -81,6 +82,6 @@ public class InstaMemberService {
         }
 
         // 생성
-        return create(username, gender);
+        return create(username, gender,imageName);
     }
 }
