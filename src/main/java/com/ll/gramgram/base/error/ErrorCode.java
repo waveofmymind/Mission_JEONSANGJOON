@@ -1,9 +1,7 @@
 package com.ll.gramgram.base.error;
 
-import com.ll.gramgram.base.rsData.RsData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
