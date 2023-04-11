@@ -1,35 +1,13 @@
 spring:
   profiles:
     active: dev
+    include: oauth
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/gram__dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
     username: wave
     password: 0913
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 880429183467-jtklkap41o046aj1lm8diq1r5cje3m5p.apps.googleusercontent.com
-            client-secret: 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
-            scope:
-              - profile
-              - email
-          kakao:
-            clientId: da582f291b457ffff3b60a0e9d003299
-            scope:
-            client-name: Kakao
-            authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
-            client-authentication-method: POST
-        provider:
-          kakao:
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
   jpa:
     hibernate:
       ddl-auto: create
