@@ -13,6 +13,8 @@ import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,11 +27,11 @@ import static com.ll.gramgram.base.error.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class LikeablePersonService {
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
-    private final MemberService memberService;
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
@@ -39,11 +41,12 @@ public class LikeablePersonService {
         if (member.getInstaMember().getUsername().equals(username)) {
             return RsData.of(SELF_LIKE_NOT_ALLOWED.getResultCode(), SELF_LIKE_NOT_ALLOWED.getMessage());
         }
+        //10명이 넘으면 리턴
         if (member.getInstaMember().getLikeablePersonCount() >= 10) {
             return RsData.of(MAX_LIKEABLE_PERSON.getResultCode(), MAX_LIKEABLE_PERSON.getMessage());
         }
 
-        Optional<LikeablePerson> findLikeablePerson = likeablePersonRepository.findByToInstaMemberUsernameAndFromInstaMemberUsername(username, member.getInstaMember().getUsername());
+        Optional<LikeablePerson> findLikeablePerson = likeablePersonRepository.findByToInstaMember_UsernameAndFromInstaMember_Username(username, member.getInstaMember().getUsername());
 
         if (findLikeablePerson.isPresent()) {
             LikeablePerson existingLikeablePerson = findLikeablePerson.get();
@@ -55,18 +58,20 @@ public class LikeablePersonService {
                 throw new DuplicateUserException(ErrorCode.DUPLICATE_USER_LIKE);
             }
         } else {
+            //새로운 호감 표시일 경우 등록한다.
             InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
-
+            InstaMember fromInstaMember = member.getInstaMember();
             LikeablePerson likeablePerson = LikeablePerson
                     .builder()
-                    .fromInstaMember(member.getInstaMember())
-                    .fromInstaMemberUsername(member.getInstaMember().getUsername())
+                    .fromInstaMember(fromInstaMember)
+                    .fromInstaMemberUsername(fromInstaMember.getUsername())
                     .toInstaMember(toInstaMember)
                     .toInstaMemberUsername(toInstaMember.getUsername())
                     .attractiveTypeCode(attractiveTypeCode)
                     .build();
-
-            member.getInstaMember().increaseLikeablePersonCount();
+            toInstaMember.addFromLikeablePerson(likeablePerson);
+            fromInstaMember.addToLikeablePerson(likeablePerson);
+            fromInstaMember.increaseLikeablePersonCount();
             likeablePersonRepository.save(likeablePerson);
 
             return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
