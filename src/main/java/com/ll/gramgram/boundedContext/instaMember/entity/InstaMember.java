@@ -59,4 +59,13 @@ public class InstaMember {
     public void increaseLikeablePersonCount() {
         this.likeablePersonCount++;
     }
+
+    public void addToLikeablePerson(LikeablePerson likeablePerson) {
+        this.toLikeablePeople.add(likeablePerson);
+    }
+
+    public void addFromLikeablePerson(LikeablePerson likeablePerson) {
+        this.fromLikeablePeople.add(likeablePerson);
+    }
+
 }
