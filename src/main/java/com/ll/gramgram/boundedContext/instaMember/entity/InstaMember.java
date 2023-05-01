@@ -35,6 +35,10 @@ public class InstaMember {
     @Setter
     private String gender;
 
+    @Column(nullable = false)
+    private int likeablePersonCount;
+
+
     @OneToMany(mappedBy = "fromInstaMember", cascade = {CascadeType.ALL})
     @OrderBy("id desc") // 정렬
     @LazyCollection(LazyCollectionOption.EXTRA)
@@ -51,4 +55,17 @@ public class InstaMember {
     public void setImageName(String imageName) {
         this.imageName = imageName;
     }
+
+    public void increaseLikeablePersonCount() {
+        this.likeablePersonCount++;
+    }
+
+    public void addToLikeablePerson(LikeablePerson likeablePerson) {
+        this.toLikeablePeople.add(likeablePerson);
+    }
+
+    public void addFromLikeablePerson(LikeablePerson likeablePerson) {
+        this.fromLikeablePeople.add(likeablePerson);
+    }
+
 }
