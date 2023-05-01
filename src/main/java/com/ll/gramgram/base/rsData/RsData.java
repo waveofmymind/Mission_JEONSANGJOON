@@ -1,10 +1,8 @@
 package com.ll.gramgram.base.rsData;
 
-import com.ll.gramgram.base.error.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
@@ -17,9 +15,7 @@ public class RsData<T> {
     public static <T> RsData<T> of(String resultCode, String msg, T data) {
         return new RsData<>(resultCode, msg, data);
     }
-    public static <T> RsData<T> failOf(ErrorCode errorCode) {
-        return new RsData<>(errorCode.name(), errorCode.getMessage(), null);
-    }
+
     public static <T> RsData<T> of(String resultCode, String msg) {
         return of(resultCode, msg, null);
     }
@@ -37,6 +33,6 @@ public class RsData<T> {
     }
 
     public boolean isFail() {
-        return isSuccess() == false;
+        return !isSuccess();
     }
 }

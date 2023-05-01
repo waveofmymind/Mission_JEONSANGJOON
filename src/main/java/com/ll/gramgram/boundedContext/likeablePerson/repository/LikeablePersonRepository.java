@@ -2,17 +2,16 @@ package com.ll.gramgram.boundedContext.likeablePerson.repository;
 
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface LikeablePersonRepository extends JpaRepository<LikeablePerson, Long> {
+public interface LikeablePersonRepository extends JpaRepository<LikeablePerson, Long>, LikeablePersonRepositoryCustom {
     List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId);
 
-    boolean existsByToInstaMemberUsernameAndFromInstaMemberUsername(String toInstaMemberUsername,String FromInstaMemberUsername);
+    List<LikeablePerson> findByToInstaMember_username(String username);
 
-    Optional<LikeablePerson> findByToInstaMember_UsernameAndFromInstaMember_Username(String toInstaMemberUsername, String FromInstaMemberUsername);
+    LikeablePerson findByFromInstaMemberIdAndToInstaMember_username(long fromInstaMemberId, String username);
 
+    Optional<LikeablePerson> findByFromInstaMember_usernameAndToInstaMember_username(String fromInstaMemberUsername, String toInstaMemberUsername);
 }

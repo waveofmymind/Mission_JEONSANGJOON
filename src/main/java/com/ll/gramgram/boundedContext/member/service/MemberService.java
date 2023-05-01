@@ -3,15 +3,12 @@ package com.ll.gramgram.boundedContext.member.service;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.member.entity.Member;
-import com.ll.gramgram.boundedContext.member.repository.MemberQueryRepository;
 import com.ll.gramgram.boundedContext.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -22,8 +19,6 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     private final MemberRepository memberRepository;
-
-    private final MemberQueryRepository memberQueryRepository;
 
     public Optional<Member> findByUsername(String username) {
         return memberRepository.findByUsername(username);
@@ -70,16 +65,9 @@ public class MemberService {
     public RsData<Member> whenSocialLogin(String providerTypeCode, String username) {
         Optional<Member> opMember = findByUsername(username); // username 예시 : KAKAO__1312319038130912, NAVER__1230812300
 
-        // 최초 로그인 시 딱 한번 실행
-        return opMember
-                .map(member ->
-                        RsData.of("S-2", "로그인 되었습니다.", member))
-                .orElseGet(() -> join(providerTypeCode, username, ""));
+        if (opMember.isPresent()) return RsData.of("S-2", "로그인 되었습니다.", opMember.get());
 
         // 소셜 로그인를 통한 가입시 비번은 없다.
-    }
-
-    public Member findByUsernameWithInstaMember(String username) {
-        return memberQueryRepository.findMemberByUsernameWithInstaMember(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "잘못된 권한입니다."));
+        return join(providerTypeCode, username, ""); // 최초 로그인 시 딱 한번 실행
     }
 }
