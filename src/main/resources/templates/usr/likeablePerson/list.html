@@ -67,13 +67,14 @@
 
                             <div class="card-actions justify-center">
                                 <a th:href="@{|modify/${likeablePerson.id}|}" class="btn btn-sm btn-outline"
-                                   th:classappend="${!likeablePerson.modifyUnlocked ? 'btn-disabled' : ''}">
+                                   th:classappend="${!likeablePerson.modifyUnlocked ? 'btn-disabled' : ''}" th:disabled="${!likeablePerson.modifyUnlocked}">
                                     <i class="fa-solid fa-pen-to-square"></i>
 
                                     호감사유 변경
                                 </a>
                                 <a class="btn btn-sm btn-outline"
                                    th:classappend="${!likeablePerson.modifyUnlocked ? 'btn-disabled' : ''}"
+                                   th:disabled="${!likeablePerson.modifyUnlocked}"
                                    href="javascript:"
                                    onclick="if ( confirm('정말로 취소하시겠습니까?') ) $(this).next().submit();">
                                     <i class="fa-solid fa-user-slash"></i>
@@ -91,6 +92,7 @@
                                     class="badge badge-primary"
                                     th:text="${likeablePerson.modifyUnlockDateRemainStrHuman}"></span>에 가능합니다.
                             </div>
+
                         </div>
                     </div>
                 </li>
