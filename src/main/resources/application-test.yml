@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/gram__test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://puddy-db.cpg0bs4xqbye.ap-northeast-2.rds.amazonaws.com:3306/gram?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
   jpa:
     hibernate:
       ddl-auto: create
