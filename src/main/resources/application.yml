@@ -1,13 +1,19 @@
+server:
+  port: 8080
 spring:
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
   profiles:
     active: dev
     include: oauth
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/gram__dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
+    url: jdbc:mysql://puddy-db.cpg0bs4xqbye.ap-northeast-2.rds.amazonaws.com:3306/gram?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
     username: wave
-    password: 0913
+    password: 09139349
   jpa:
     hibernate:
       ddl-auto: create
@@ -19,7 +25,12 @@ spring:
 logging:
   level:
     root: INFO
-    com.ll.gramgram_ai: DEBUG
+    com.ll.gramgram: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
 
+custom:
+  likeablePerson:
+    modifyCoolTime: '#{60 * 60 * 3}'
+    from:
+      max: 10
